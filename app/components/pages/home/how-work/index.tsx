@@ -25,7 +25,7 @@ export const HowWork = () => {
           items={{
             icon: <Sparkle size={120} />,
             title: "Receitas únicas!",
-            desc: `'Descubra novas combinações de sabores e crie pratos que surpreenderão seu paladar. Com nossa IA, cada receita é uma experiência culinária única, feita sob medida para você.'`,
+            desc: "Descubra novas combinações de sabores e crie pratos que surpreenderão seu paladar. Com nossa IA, cada receita é uma experiência culinária única, feita sob medida para você.",
           }}
         />
 

@@ -13,9 +13,9 @@ export const LastRecipes = () => {
             key={index}
             recipe={{
               icon: <CookingPot />,
-              name: `'Macarrão com Sasicha'`,
-              image: `''`,
-              startDate: `'2024/08/26'`,
+              name: 'Macarrão com Sasicha',
+              image: '',
+              startDate: '2024/08/26',
             }}
           />
         ))}

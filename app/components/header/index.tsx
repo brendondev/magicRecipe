@@ -16,7 +16,7 @@ const NAV_ITEMS = [
   },
 ];
 
-const Header: React.FC = () => {
+export const Header = () => {
   return (
     <header className="absolute top-0 w-full z-10 h-24 flex justify-center">
       <div className="container flex items-center justify-between">
@@ -27,7 +27,6 @@ const Header: React.FC = () => {
             src="/images/logo.svg"
             alt="Logo Receita Mágica"
           />
-          <p>ABC</p>
         </Link>
 
         <nav className="flex items-center sm:gap-10 gap-4">
@@ -39,5 +38,3 @@ const Header: React.FC = () => {
     </header>
   );
 };
-
-export default Header;
