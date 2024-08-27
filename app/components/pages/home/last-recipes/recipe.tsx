@@ -3,6 +3,7 @@ import { getRelativeTimeString } from "@/app/utils/get-relative-time";
 import Image from "next/image";
 import { ReactNode } from "react";
 import { ForkKnife } from "@phosphor-icons/react";
+import Slider from "react-slick"
 
 type RecipeProps = {
   recipe: {
@@ -34,7 +35,7 @@ export const Recipe = ({ recipe }: RecipeProps) => {
       <Button className="mt-3">
         Abrir <ForkKnife />
       </Button>
-      <span className="font-mono text-[10px]">{relativeTime}</span>
+      <span className="text-[10px]">{relativeTime}</span>
     </div>
   );
 };

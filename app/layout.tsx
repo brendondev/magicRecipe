@@ -1,4 +1,4 @@
-import { Inter, IBM_Plex_Mono } from "next/font/google";
+import { Inter, IBM_Plex_Mono, Indie_Flower } from "next/font/google";
 import "./globals.css";
 import { ReactNode } from "react";
 import { Header } from "./components/header";
@@ -8,15 +8,15 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-const plexMono = IBM_Plex_Mono({
-  variable: "--font-plex-mono",
+const indieFlower = Indie_Flower({
+  variable: "--font-indie-flower",
   subsets: ["latin"],
-  weight: ["400", "500"],
+  weight: '400',
 });
 
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
-    <html lang="pt-BR" className={`${inter.variable} ${plexMono.variable}`}>
+    <html lang="pt-BR" className={`${inter.variable} ${indieFlower.variable}`}>
       <body>
         <Header />
         {children}
