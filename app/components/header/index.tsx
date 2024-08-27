@@ -27,6 +27,7 @@ export const Header = () => {
           src="/images/logo.svg"
           alt="Logo Receita Mágica"
           />
+          <p>ABC</p>
         </Link>
 
         <nav className="flex items-center sm:gap-10 gap-4">
