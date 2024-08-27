@@ -22,7 +22,7 @@ const MOCK_CONTACTS = [
   },
 ]
 
-export const HeroSection = () =>{
+export const HeroSection = () => {
   return(
     <>
     <section className="w-full lg:h-[755px] bg-hero-image bg-cover bg-center bg-no-repeat flex flex-col justify-end sm:pb-32 py-32 lg:pb-[110px]">
