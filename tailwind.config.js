@@ -14,7 +14,7 @@ module.exports = {
         // 'hero-image': 'url('/images/hero-bg.png')',
       },
       fontFamily: {
-        mono: ["var(--font-indie-flower)", "indie-flower"],
+        flower: ["var(--font-indie-flower)", "indie-flower"],
       },
       boxShadow: {
         button: "0px 0px 68px 7px rgba(135,206,250,0.2)",

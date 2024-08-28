@@ -4,8 +4,23 @@ import { ItemsHow } from "./items-how-works";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { useEffect, useState } from "react";
+import React, { Component } from "react";
+
 
 export const HowWork = () => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth <= 768); 
+    };
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  }, []);
   const settings = {
     infinite: true,
     slidesToShow: 3,
@@ -13,39 +28,41 @@ export const HowWork = () => {
     autoplay: true,
     autoplaySpeed: 4000,
     pauseOnHover: true,
-    arrows: false
+    arrows: false,
+    vertical: isMobile,
+    verticalSwiping: isMobile
   };
 
   return (
     <section className="container py-16">
       <CookingPot />
       <SectionTitle title="Como funciona?" subtitle="na palma da mão!" />
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(264px,1fr))] gap-3 slider-container">
+      <div className="slider-container ">
         <Slider {...settings}>
           <ItemsHow
             items={{
-              icon: <HeadCircuit size={120} />,
+              icon: <HeadCircuit size={100} />,
               title: `Tecnologia de última ponta!`,
               desc: "Nosso aplicativo utiliza inteligência artificial avançada para criar receitas personalizadas com base nos ingredientes que você tem em casa. Nunca foi tão fácil cozinhar pratos deliciosos e inovadores.",
             }}
           />
           <ItemsHow
             items={{
-              icon: <Sparkle size={120} />,
+              icon: <Sparkle size={100} />,
               title: "Receitas únicas!",
               desc: "Descubra novas combinações de sabores e crie pratos que surpreenderão seu paladar. Com nossa IA, cada receita é uma experiência culinária única, feita sob medida para você.",
             }}
           />
           <ItemsHow
             items={{
-              icon: <Sliders size={120} />,
+              icon: <Sliders size={100} />,
               title: "Controle total",
               desc: "Personalize suas receitas ajustando os ingredientes, o tempo de preparo e as técnicas culinárias. Nosso app garante que você tenha controle total sobre suas criações na cozinha.",
             }}
           />
           <ItemsHow
             items={{
-              icon: <Footprints size={120} />,
+              icon: <Footprints size={100} />,
               title: "Passo a passo",
               desc: "Siga o passo a passo e tenha uma boa refeição!",
             }}
