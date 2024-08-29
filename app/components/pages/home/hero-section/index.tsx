@@ -1,6 +1,8 @@
 import { Button } from "@/app/components/button";
 import { TagsBadge } from "@/app/components/tags-badge";
 import Image from "next/image";
+import { motion } from 'framer-motion';
+
 import {
   ChefHat,
   GithubLogo,
@@ -30,8 +32,7 @@ const MOCK_CONTACTS = [
 
 export const HeroSection = () => {
   return (
-    <>
-      <section className="w-full lg:h-[755px] bg-hero-image bg-cover bg-center bg-no-repeat flex flex-col justify-end sm:pb-5 py-32 lg:pb-[50px]">
+      <section className="w-full lg:h-[655px] bg-hero-image bg-cover bg-center bg-no-repeat flex flex-col justify-end sm:pb-5 py-32 lg:pb-[50px]">
         <div className="container flex items-start justify-between flex-col-reverse lg:flex-row">
           <div className="w-full lg:max-w-[530px]">
             <p className="font-flower text-red-400">Descubra o poder do</p>
@@ -39,7 +40,7 @@ export const HeroSection = () => {
 
             <p className="text-gray-400 my-6 text-sm sm:text-base">
               🌟 Transforme sua cozinha em uma coisa de outro Planeta! ✨<br />
-              Diga o que tem na dispensa e deixe que o <b>Receita Mágica</b>
+              Diga o que tem na dispensa e deixe que o <b>Receita Mágica </b>
               crie a receita perfeita para surpreender seu paladar.
             </p>
             <div className="flex flex-wrap gap-x-2 gap-y-3 lg:max-w-[340px]">
@@ -47,7 +48,6 @@ export const HeroSection = () => {
                 <TagsBadge name="#saudavel" key={index} />
               ))}
             </div>
-
             <div className="mt-6 lg:mt-10 flex sm:items-center sm:gap-5 flex-col sm:flex-row">
               <Button className="w-max shadow-button">
                 Entre em Contato
@@ -73,12 +73,11 @@ export const HeroSection = () => {
           <Image
             width={420}
             height={404}
-            src={"/images/profilesvg.svg"}
+            src={"/images/mockup.svg"}
             alt="astronauta chef"
-            className="w-[200px] h-[300px] lg:w-[320px] lg:h-[400px] mb-6 lg:mb-0 rounded-lg object-cover"
+            className="w-[500px] h-[300px] lg:w-[620px] lg:h-[400px] lg:mb-0 rounded-lg object-contain"
           />
         </div>
       </section>
-    </>
   );
 };

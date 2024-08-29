@@ -3,7 +3,8 @@ import { CookingPot, ForkKnife } from "@phosphor-icons/react";
 import { Recipe } from "./recipe";
 
 export const LastRecipes = () => {
-  return (
+  return ( 
+  
     <section className="container py-16">
       <CookingPot />
       <SectionTitle title="Receitas recentes" subtitle="últimas receitas" />
@@ -21,5 +22,6 @@ export const LastRecipes = () => {
         ))}
       </div>
     </section>
+
   );
 };

@@ -7,12 +7,12 @@ import React from "react";
 
 const NAV_ITEMS = [
   {
-    label: "Home",
+    label: "Início",
     href: "/",
   },
   {
-    label: "Projetos",
-    href: "/projects",
+    label: "Receita Mágica",
+    href: "/generate",
   },
 ];
 

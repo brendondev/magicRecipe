@@ -7,13 +7,17 @@ import "slick-carousel/slick/slick-theme.css";
 import { useEffect, useState } from "react";
 import React, { Component } from "react";
 
-
 export const HowWork = () => {
-  const [isMobile, setIsMobile] = useState(false);
+  const [slidesToShow, setSlidesToShow] = useState(3);
+
 
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth <= 768); 
+      if (window.innerWidth <= 768) {
+        setSlidesToShow(1);
+      } else {
+        setSlidesToShow(3);
+      }
     };
     handleResize();
     window.addEventListener("resize", handleResize);
@@ -23,26 +27,24 @@ export const HowWork = () => {
   }, []);
   const settings = {
     infinite: true,
-    slidesToShow: 3,
+    slidesToShow: slidesToShow,
     slidesToScroll: 1,
     autoplay: true,
     autoplaySpeed: 4000,
     pauseOnHover: true,
-    arrows: false,
-    vertical: isMobile,
-    verticalSwiping: isMobile
+    arrows: true,
   };
 
   return (
     <section className="container py-16">
       <CookingPot />
       <SectionTitle title="Como funciona?" subtitle="na palma da mão!" />
-      <div className="slider-container ">
+      <div className="slider-container">
         <Slider {...settings}>
           <ItemsHow
             items={{
               icon: <HeadCircuit size={100} />,
-              title: `Tecnologia de última ponta!`,
+              title: `Inteligência Artificial!`,
               desc: "Nosso aplicativo utiliza inteligência artificial avançada para criar receitas personalizadas com base nos ingredientes que você tem em casa. Nunca foi tão fácil cozinhar pratos deliciosos e inovadores.",
             }}
           />
