@@ -1,6 +1,12 @@
 import Select from "react-select"
 
-export const SelectForm = ({className, options, placeholder}) => {
+interface SelectFormProps {
+  className?: string;
+  options: Array<{ label: string; value: string }>;
+  placeholder?: string;
+}
+
+export const SelectForm = ({className, options, placeholder}: SelectFormProps) => {
   return (
     <>
     <Select
