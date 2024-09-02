@@ -9,7 +9,7 @@ interface Item {
 }
 
 export default function LevelButton() {
-    const [value, setValue] = useState<Item>(null);
+    const [value, setValue] = useState<Item | null>(null);
     const items: Item[] = [
         {name: 'Iniciante', value: 'Iniciante'},
         {name: 'Intermediário', value: 'Intermediário'},
@@ -32,7 +32,9 @@ export function Aditional() {
 
     return (
         <div className="mt-5">
-            <Checkbox onChange={e => setChecked(e.checked)} checked={checked}></Checkbox>
+            <Checkbox
+            onChange={e => setChecked(e.checked ?? false)}
+            checked={checked}></Checkbox>
         </div>
     )
 }
