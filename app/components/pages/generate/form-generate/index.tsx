@@ -16,13 +16,13 @@ export const FormGenerate = () =>{
       <SelectForm
         className={"bg-gray-400 text-red-500 w-[400px] mb-5 rounded-lg"}
         options={ingredientOptions}
-        placeholder={<div>Ingredientes</div>}
+        placeholder="Ingredientes"
       />
       <p>Selecione os utensílios disponíveis! </p>
       <SelectForm
         className={"bg-gray-400 text-red-500 w-[400px] mb-5 rounded-lg"}
         options={utensilOptions}
-        placeholder={<div>Utensílios</div>}
+        placeholder="Utensílios"
       />
       <p>Selecione seu nível de cozinha!</p>
       <LevelButton />
