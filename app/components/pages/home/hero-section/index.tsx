@@ -32,7 +32,7 @@ const MOCK_CONTACTS = [
 
 export const HeroSection = () => {
   return (
-      <section className="w-full lg:h-[655px] bg-hero-image bg-cover bg-center bg-no-repeat flex flex-col justify-end sm:pb-5 py-32 lg:pb-[50px]">
+      <section className="w-full lg:h-[655px] bg-hero-image bg-cover bg-center bg-no-repeat flex flex-col justify-end sm:pb-5 pt-32 lg:pb-[50px]">
         <div className="container flex items-start justify-between flex-col-reverse lg:flex-row">
           <div className="w-full lg:max-w-[530px]">
             <p className="font-flower text-red-400">Descubra o poder do</p>
@@ -73,9 +73,9 @@ export const HeroSection = () => {
           <Image
             width={420}
             height={404}
-            src={"/images/mockup.svg"}
+            src={"/images/profilesvg.svg"}
             alt="astronauta chef"
-            className="w-[500px] h-[300px] lg:w-[620px] lg:h-[400px] lg:mb-0 rounded-lg object-contain"
+            className="w-[500px] h-[300px] lg:w-[620px] lg:h-[500px] lg:mb-0 rounded-lg object-contain"
           />
         </div>
       </section>
