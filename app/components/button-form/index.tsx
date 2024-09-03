@@ -8,53 +8,81 @@ interface Item {
     value: string;
 }
 
-export default function ChefLevel() {
-    const [value, setValue] = useState<Item | null>(null);
+interface ChefLevelProps {
+    onChange: (value: string) => void;
+}
+
+export default function ChefLevel({ onChange }: ChefLevelProps) {
+    const [value, setValue] = useState<string | null>(null);
     const items: Item[] = [
-        {name: 'Iniciante', value: 'Iniciante'},
-        {name: 'Intermediário', value: 'Intermediário'},
-        {name: 'Profissional', value: 'Profissional'}
+        { name: 'Iniciante', value: 'Iniciante' },
+        { name: 'Intermediário', value: 'Intermediário' },
+        { name: 'Profissional', value: 'Profissional' }
     ];
-    
+
+    const handleChange = (e: SelectButtonChangeEvent) => {
+        setValue(e.value);
+        onChange(e.value);
+    };
 
     return (
-            <SelectButton
+        <SelectButton
             className="w-[390px] mb-5"
             value={value}
-            onChange={(e: SelectButtonChangeEvent) => setValue(e.value)}
+            onChange={handleChange}
             optionLabel="name"
-            options={items} />
+            options={items}
+        />
     );
 }
 
-export function MealType() {
-    const [value, setValue] = useState<Item | null>(null);
+interface MealTypeProps {
+    onChange: (value: string) => void;
+}
+
+export function MealType({ onChange }: MealTypeProps) {
+    const [value, setValue] = useState<string | null>(null);
     const items: Item[] = [
         {name: 'Café', value: 'Café'},
         {name: 'Almoço', value: 'Almoço'},
         {name: 'Janta', value: 'Janta'}
     ];
-    
+
+    const handleChange = (e: SelectButtonChangeEvent) => {
+        const selectedValue = e.value as string;
+        setValue(selectedValue);
+        onChange(selectedValue);
+    };
 
     return (
-            <SelectButton
+        <SelectButton
             className="w-[390px] flex items-center justify-center"
             value={value}
-            onChange={(e: SelectButtonChangeEvent) => setValue(e.value)}
+            onChange={handleChange}
             optionLabel="name"
-            options={items} />
+            options={items}
+        />
     );
 }
 
+interface AditionalProps {
+    onChange: (checked: boolean) => void;
+}
 
-export function Aditional() {
+export function Aditional({ onChange }: AditionalProps) {
     const [checked, setChecked] = useState(false);
 
+    const handleChange = (e: { checked: boolean }) => {
+        setChecked(e.checked ?? false);
+        onChange(e.checked ?? false);
+    };
+
     return (
-        <div className="">
+        <div>
             <Checkbox
-            onChange={e => setChecked(e.checked ?? false)}
-            checked={checked}></Checkbox>
+                onChange={handleChange}
+                checked={checked}
+            />
         </div>
-    )
+    );
 }

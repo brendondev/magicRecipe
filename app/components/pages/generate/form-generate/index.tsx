@@ -1,48 +1,54 @@
-"use client";
-
+import React, { useState } from "react";
 import { SelectForm } from "@/app/components/select-form";
 import { ingredientOptions, utensilOptions } from "@/app/utils/constants";
 import { Check, ChefHat } from "@phosphor-icons/react/dist/ssr";
-import React, { useState } from "react";
 import ChefLevel from "@/app/components/button-form";
 import { Aditional, MealType } from "@/app/components/button-form";
 import { Button } from "@/app/components/button";
 
 export const FormGenerate = () => {
   const [time, setTime] = useState<number>(10);
-  const [ingredients, setIngredients] = useState<string[]>([]);
+  const [selectedIngredients, setIngredients] = useState<string[]>([]);
+  const [selectedAdditionalAllowed, setIsAdditionalAllowed] = useState<boolean>(false);
+  const [selectedChefLevel, setChefLevel] = useState<string>('');
   const [selectedUtensils, setSelectedUtensils] = useState<string[]>([]);
+  const [selectedMealType, setSelectedMealType] = useState<string>(''); // Corrigir nome do estado
   const [response, setResponse] = useState<string | null>(null);
-  const [selectedRecipe, setSelectedRecipe] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
 
   const handleGenerateRecipe = async () => {
     setIsLoading(true);
-
+  
     try {
-      const response = await fetch('/api/gemini/route', {  // Corrigido o caminho para '/api/gemini/route'
+      const response = await fetch('/api/route', { 
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          ChefLevel,
-          ingredientOptions,
-          selectedUtensils,
+          ChefLevel: selectedChefLevel,
+          ingredientOptions: selectedIngredients,
+          selectedUtensils: selectedUtensils,
           time: time,
-          Aditional,
-          MealType,
+          Aditional: selectedAdditionalAllowed,
+          MealType: selectedMealType, 
         }),
       });
-
-      const text = await response.text(); // Obtém a resposta como texto
-      console.log(text); // Imprime a resposta para depuração
-    
+  
+      if (!response.ok) {
+        throw new Error(`Erro na solicitação: ${response.statusText}`);
+      }
+  
+      const text = await response.text();
+      console.log('Resposta do fetch:', text); // Log para depuração
+  
       const result = JSON.parse(text); // Tenta analisar o JSON
+  
       if (result.instructions) {
         setResponse(result.instructions);
+        console.log('Instruções recebidas:', result.instructions); // Verifique se o conteúdo está correto
       } else {
         setErrorMessage("Erro ao encontrar uma resposta.");
         setShowErrorModal(true);
@@ -53,8 +59,8 @@ export const FormGenerate = () => {
       setShowErrorModal(true);
     } finally {
       setIsLoading(false);
-    };
-  }
+    }
+  };
 
   return (
     <section className="container flex flex-col items-center justify-center border-gray-800 border-2 rounded-lg py-20 mb-10">
@@ -86,11 +92,17 @@ export const FormGenerate = () => {
       />
       <span className="mb-5">{time} minutos</span>
       <p>Selecione seu nível de cozinha!</p>
-      <ChefLevel />
+      <ChefLevel
+        onChange={(value) => setChefLevel(value)}
+      />
       <p>Escolha o tipo de refeição!</p>
-      <MealType />
+      <MealType
+        onChange={(value) => setSelectedMealType(value)}
+      />
       <div className="flex justify-center items-center mt-5 gap-2">
-        <Aditional />
+        <Aditional
+        onChange={(checked) => setIsAdditionalAllowed(checked)}
+        />
         <p>Permitir ingredientes adicionais?</p>
       </div>
       <Button
@@ -111,10 +123,11 @@ export const FormGenerate = () => {
             >
               Fechar
             </button>
-            {/* {response && <div dangerouslySetInnerHTML={{ __html: response }} />} */}
           </div>
         </div>
       )}
+      <div className="text-black"> {response && <div dangerouslySetInnerHTML={{ __html: response }} />}</div>
+   
     </section>
   );
 };
