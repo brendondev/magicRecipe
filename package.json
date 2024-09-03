@@ -9,6 +9,7 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@google/generative-ai": "^0.17.1",
     "@graphcms/rich-text-react-renderer": "0.6.1",
     "@hookform/resolvers": "3.0.1",
     "@phosphor-icons/react": "^2.1.7",
@@ -26,8 +27,8 @@
     "next": "^14.2.6",
     "postcss": "^8.4.41",
     "primereact": "^10.8.2",
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "react-hook-form": "^7.43.9",
     "react-hot-toast": "2.4.0",
     "react-icons": "4.8.0",

@@ -1,6 +1,7 @@
-import { Button } from "primereact/button";
-import { SelectButton } from "primereact/selectbutton";
-import { useState } from "react";
+interface ingredientOptions {
+  value: string;
+  label: string;
+}
 
 export const ingredientOptions = [
       { value: 'Tomate', label: '🍅 Tomate' },

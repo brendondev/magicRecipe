@@ -8,7 +8,7 @@ interface Item {
     value: string;
 }
 
-export default function LevelButton() {
+export default function ChefLevel() {
     const [value, setValue] = useState<Item | null>(null);
     const items: Item[] = [
         {name: 'Iniciante', value: 'Iniciante'},
@@ -19,19 +19,39 @@ export default function LevelButton() {
 
     return (
             <SelectButton
-            className=""
+            className="w-[390px] mb-5"
             value={value}
             onChange={(e: SelectButtonChangeEvent) => setValue(e.value)}
             optionLabel="name"
             options={items} />
     );
 }
-        
+
+export function MealType() {
+    const [value, setValue] = useState<Item | null>(null);
+    const items: Item[] = [
+        {name: 'Café', value: 'Café'},
+        {name: 'Almoço', value: 'Almoço'},
+        {name: 'Janta', value: 'Janta'}
+    ];
+    
+
+    return (
+            <SelectButton
+            className="w-[390px] flex items-center justify-center"
+            value={value}
+            onChange={(e: SelectButtonChangeEvent) => setValue(e.value)}
+            optionLabel="name"
+            options={items} />
+    );
+}
+
+
 export function Aditional() {
     const [checked, setChecked] = useState(false);
 
     return (
-        <div className="mt-5">
+        <div className="">
             <Checkbox
             onChange={e => setChecked(e.checked ?? false)}
             checked={checked}></Checkbox>
