@@ -44,10 +44,10 @@ export async function POST(request: Request) {
         <p class="text-lg mb-2"><strong>Nível do Chef:</strong> ${ChefLevel}</p>
         <p class="text-lg mb-2"><strong>Ingredientes:</strong></p>
         <ul class="list-disc list-inside pl-4 mb-2">
-          ${ingredientOptions.map((ingredient: string) => `<li class="text-lg">${ingredient}</li>`).join('')}
+          ${ingredientOptions.map((ingredientOptions: string) => `<li class="text-lg">${ingredientOptions}</li>`).join('')}
         </ul>
         ${Aditional ? `
-          <p class="text-lg mb-2"><strong>Ingredientes Adicionais:</strong></p>
+          <p class="text-lg mb-2"><strong>Ingredientes Adicionais:${Aditional}</strong></p>
           <ul class="list-disc list-inside pl-4 mb-2">
             ${formattedTips ? `<li class="text-lg">${formattedTips}</li>` : ''}
           </ul>` : ''}

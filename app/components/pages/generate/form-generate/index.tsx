@@ -1,9 +1,7 @@
 import React, { useState } from "react";
-import { SelectForm } from "@/app/components/select-form";
-import { ingredientOptions, utensilOptions } from "@/app/utils/constants";
 import { Check, ChefHat } from "@phosphor-icons/react/dist/ssr";
-import ChefLevel from "@/app/components/button-form";
-import { Aditional, MealType } from "@/app/components/button-form";
+import  {ChefLevel, IngredientsItem, UtensilsItem } from "@/app/components/array-select";
+import { Aditional, MealType } from "@/app/components/array-select";
 import { Button } from "@/app/components/button";
 
 export const FormGenerate = () => {
@@ -12,7 +10,7 @@ export const FormGenerate = () => {
   const [selectedAdditionalAllowed, setIsAdditionalAllowed] = useState<boolean>(false);
   const [selectedChefLevel, setChefLevel] = useState<string>('');
   const [selectedUtensils, setSelectedUtensils] = useState<string[]>([]);
-  const [selectedMealType, setSelectedMealType] = useState<string>(''); // Corrigir nome do estado
+  const [selectedMealType, setSelectedMealType] = useState<string>('');
   const [response, setResponse] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
@@ -42,13 +40,13 @@ export const FormGenerate = () => {
       }
   
       const text = await response.text();
-      console.log('Resposta do fetch:', text); // Log para depuração
+      console.log('Resposta do fetch:', text);
   
-      const result = JSON.parse(text); // Tenta analisar o JSON
+      const result = JSON.parse(text);
   
       if (result.instructions) {
         setResponse(result.instructions);
-        console.log('Instruções recebidas:', result.instructions); // Verifique se o conteúdo está correto
+        console.log('Instruções recebidas:', result.instructions);
       } else {
         setErrorMessage("Erro ao encontrar uma resposta.");
         setShowErrorModal(true);
@@ -61,6 +59,7 @@ export const FormGenerate = () => {
       setIsLoading(false);
     }
   };
+  
 
   return (
     <section className="container flex flex-col items-center justify-center border-gray-800 border-2 rounded-lg py-20 mb-10">
@@ -68,18 +67,12 @@ export const FormGenerate = () => {
         Cozinha <ChefHat />
       </h1>
       <p>Selecione seus ingredientes!</p>
-      <SelectForm
-        className="bg-gray-400 text-gray-600 w-[400px] mb-5 rounded-lg"
-        options={ingredientOptions}
-        placeholder="Ingredientes"
-        onChange={(options) => setIngredients(options.map((option: any) => option.value))}
-      />
+      <IngredientsItem
+        onChange={(selectedOptions) => setIngredients(selectedOptions?.map(option => option.value) || [])}
+        />
       <p>Selecione os utensílios disponíveis!</p>
-      <SelectForm
-        className="bg-gray-400 text-gray-600 w-[400px] mb-5 rounded-lg"
-        options={utensilOptions}
-        onChange={(options) => setSelectedUtensils(options.map((option: any) => option.value))}
-        placeholder="Utensílios"
+      <UtensilsItem
+        onChange={(selectedOptions) => setSelectedUtensils(selectedOptions?.map(option => option.value) || [])}
       />
       <p>Quanto tempo para cozinhar? (Minutos)</p>
       <input
@@ -101,7 +94,7 @@ export const FormGenerate = () => {
       />
       <div className="flex justify-center items-center mt-5 gap-2">
         <Aditional
-        onChange={(checked) => setIsAdditionalAllowed(checked)}
+          onChange={(checked) => setIsAdditionalAllowed(checked)}
         />
         <p>Permitir ingredientes adicionais?</p>
       </div>
