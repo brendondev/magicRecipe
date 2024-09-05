@@ -104,7 +104,7 @@ export const FormGenerate = () => {
       <div className="rounded-lg placeholder:text-gray-400 text-gray-50 p-4 focus:outline-none flex flex-col items-center focus:ring-2 ring-red-500">
       <textarea 
             placeholder="Deseja especificar algo? Digite aqui..."
-            maxLength={200}
+            maxLength={50}
             onChange={(e) => setNotes(e.target.value)}
             value={notes}
             className="resize-none w-full h-[100px] bg-gray-800 rounded-lg placeholder:text-gray-400 text-gray-50 p-4 focus:outline-none focus:ring-2 ring-red-500"
