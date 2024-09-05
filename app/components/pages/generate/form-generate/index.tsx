@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Basket, Check, ChefHat, ForkKnife } from "@phosphor-icons/react/dist/ssr";
-import  {ChefLevel, IngredientsItem, UtensilsItem } from "@/app/components/ArraySelect";
-import { Additional, MealType } from "@/app/components/ArraySelect";
+import  {ChefLevel, IngredientsItem, UtensilsItem } from "@/app/components/array-select";
+import { Additional, MealType } from "@/app/components/array-select";
 import { Button } from "@/app/components/button";
 
 export const FormGenerate = () => {
