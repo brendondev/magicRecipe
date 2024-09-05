@@ -130,8 +130,8 @@ interface UtensilsItemProps {
     options: [
       { value: 'arroz-branco', label: '🍚 Arroz branco' },
       { value: 'arroz-integral', label: '🍚 Arroz integral' },
-      { value: 'feijao-carioca', label: '🫘 Feijão carioca' },
-      { value: 'feijao-preto', label: '🫘 Feijão preto' },
+      { value: 'feijao-carioca', label: 'Feijão carioca' },
+      { value: 'feijao-preto', label: 'Feijão preto' },
       { value: 'lentilha', label: '🍛 Lentilha' },
       { value: 'grao-de-bico', label: '🥙 Grão de bico' },
       { value: 'milho', label: '🌽 Milho' },
