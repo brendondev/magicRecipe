@@ -1,4 +1,4 @@
-import { SectionTitle } from "@/app/components/SectionTitle";
+import { SectionTitle } from "@/app/components/section-title";
 import { CookingPot, ForkKnife } from "@phosphor-icons/react";
 import { Recipe } from "./recipe";
 

@@ -1,4 +1,4 @@
-import { SectionTitle } from "@/app/components/SectionTitle"
+import { SectionTitle } from "@/app/components/section-title"
 import Link from "next/link"
 import { ArrowLeft } from "@phosphor-icons/react/dist/ssr"
 

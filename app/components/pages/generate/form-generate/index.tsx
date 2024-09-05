@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Basket, Check, ChefHat, ForkKnife } from "@phosphor-icons/react/dist/ssr";
 import  {ChefLevel, IngredientsItem, UtensilsItem } from "@/app/components/ArraySelect";
 import { Additional, MealType } from "@/app/components/ArraySelect";
-import { Button } from "@/app/components/Button";
+import { Button } from "@/app/components/button";
 
 export const FormGenerate = () => {
   const [time, setTime] = useState<number>(10);
