@@ -1,4 +1,4 @@
-import { Button } from "@/app/components/button";
+import { Button } from "@/app/components/Button";
 import { TagsBadge } from "@/app/components/tags-badge";
 import Image from "next/image";
 import { motion } from 'framer-motion';

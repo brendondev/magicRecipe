@@ -1,4 +1,4 @@
-import { Button } from "@/app/components/button";
+import { Button } from "@/app/components/Button";
 import { getRelativeTimeString } from "@/app/utils/get-relative-time";
 import Image from "next/image";
 import { ReactNode } from "react";

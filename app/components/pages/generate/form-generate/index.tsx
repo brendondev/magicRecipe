@@ -1,8 +1,8 @@
 import React, { useState } from "react";
-import { Check, ChefHat } from "@phosphor-icons/react/dist/ssr";
-import  {ChefLevel, IngredientsItem, UtensilsItem } from "@/app/components/array-select";
-import { Aditional, MealType } from "@/app/components/array-select";
-import { Button } from "@/app/components/button";
+import { Basket, Check, ChefHat, ForkKnife } from "@phosphor-icons/react/dist/ssr";
+import  {ChefLevel, IngredientsItem, UtensilsItem } from "@/app/components/ArraySelect";
+import { Additional, MealType } from "@/app/components/ArraySelect";
+import { Button } from "@/app/components/Button";
 
 export const FormGenerate = () => {
   const [time, setTime] = useState<number>(10);
@@ -15,6 +15,7 @@ export const FormGenerate = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
+  const [notes, setNotes] = useState(''); 
 
   const handleGenerateRecipe = async () => {
     setIsLoading(true);
@@ -30,8 +31,9 @@ export const FormGenerate = () => {
           ingredientOptions: selectedIngredients,
           selectedUtensils: selectedUtensils,
           time: time,
-          Aditional: selectedAdditionalAllowed,
+          additional: selectedAdditionalAllowed,
           MealType: selectedMealType, 
+          notes,
         }),
       });
   
@@ -66,11 +68,11 @@ export const FormGenerate = () => {
       <h1 className="font-flower font-semibold text-3xl mb-5 flex gap-1">
         Cozinha <ChefHat />
       </h1>
-      <p>Selecione seus ingredientes!</p>
+      <Basket size={40} className="text-red-400"/>
       <IngredientsItem
         onChange={(selectedOptions) => setIngredients(selectedOptions?.map(option => option.value) || [])}
         />
-      <p>Selecione os utensílios disponíveis!</p>
+      <ForkKnife size={40} className="text-red-400"/>
       <UtensilsItem
         onChange={(selectedOptions) => setSelectedUtensils(selectedOptions?.map(option => option.value) || [])}
       />
@@ -93,11 +95,23 @@ export const FormGenerate = () => {
         onChange={(value) => setSelectedMealType(value)}
       />
       <div className="flex justify-center items-center mt-5 gap-2">
-        <Aditional
+        <Additional
           onChange={(checked) => setIsAdditionalAllowed(checked)}
         />
         <p>Permitir ingredientes adicionais?</p>
       </div>
+
+      <div className="rounded-lg placeholder:text-gray-400 text-gray-50 p-4 focus:outline-none flex flex-col items-center focus:ring-2 ring-red-500">
+      <textarea 
+            placeholder="Deseja especificar algo? Digite aqui..."
+            maxLength={500}
+            onChange={(e) => setNotes(e.target.value)}
+            value={notes} // Usa o estado "notes"
+            className="resize-none w-full h-[100px] bg-gray-800 rounded-lg placeholder:text-gray-400 text-gray-50 p-4 focus:outline-none focus:ring-2 ring-red-500"
+          />
+        
+      </div>
+
       <Button
         className="mt-5 py-1"
         onClick={handleGenerateRecipe}

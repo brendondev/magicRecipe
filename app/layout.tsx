@@ -1,9 +1,9 @@
 import { Inter, IBM_Plex_Mono, Indie_Flower } from "next/font/google";
 import "./globals.css";
 import { ReactNode } from "react";
-import { Header } from "./components/header";
-import { ContactForm } from "./components/contact-form";
-import { Footer } from "./components/footer";
+import { Header } from "./components/Header";
+import { ContactForm } from "./components/ContactForm";
+import { Footer } from "./components/Footer";
 
 const inter = Inter({
   variable: "--font-inter",

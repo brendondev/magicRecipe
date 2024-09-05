@@ -1,6 +1,6 @@
 "use client";
-import { Button } from "../button"
-import { SectionTitle } from "../section-title"
+import { Button } from "../Button"
+import { SectionTitle } from "../SectionTitle"
 import { Envelope, ArrowRight } from "@phosphor-icons/react/dist/ssr"
 import { useForm } from "react-hook-form"
 import { z } from "zod"

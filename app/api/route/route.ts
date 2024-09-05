@@ -3,9 +3,9 @@ import { GoogleGenerativeAI } from '@google/generative-ai';
 
 export async function POST(request: Request) {
   try {
-    const { ChefLevel, ingredientOptions, selectedUtensils, time, Aditional, MealType } = await request.json();
+    const { ChefLevel, ingredientOptions, selectedUtensils, time, additional, MealType, notes } = await request.json();
 
-    if (!ChefLevel || !ingredientOptions || !selectedUtensils || !time || Aditional === undefined || !MealType) {
+    if (!ChefLevel || !ingredientOptions || !selectedUtensils || !time || additional === undefined || !MealType || notes === undefined) {
       return NextResponse.json({ error: 'Faltam parâmetros na solicitação' }, { status: 400 });
     }
 
@@ -18,15 +18,20 @@ export async function POST(request: Request) {
     const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
     const prompt = `
-      Crie uma receita com base nas seguintes informações:
-      Nível do Chef: ${ChefLevel}
-      Ingredientes: ${ingredientOptions.join(', ')}
-      Utensílios: ${selectedUtensils.join(', ')}
-      Tempo de Cozinha: ${time} minutos
-      ${Aditional ? 'Inclua ingredientes adicionais se necessário.' : 'Use apenas os ingredientes fornecidos.'}
-      Tipo de Refeição: ${MealType}
-      Retorne apenas o preparo e o título da receita, incluindo emojis se necessário.
-    `;
+    Crie uma receita com base nas seguintes informações:
+    Nível do Chef: ${ChefLevel}
+    Ingredientes: ${ingredientOptions.join(', ')}
+    Utensílios: ${selectedUtensils.join(', ')}
+    Tempo de Cozinha: ${time} minutos
+    ${additional ? 'Inclua ingredientes adicionais.' : 'Use apenas os ingredientes fornecidos.'}
+    Tipo de Refeição: ${MealType}
+    ${
+      notes
+        ? `Notas adicionais do usuário: ${notes}` // Inclui o campo separado de notas no prompt
+        : ''
+    }
+    Retorne apenas o preparo e o título da receita, incluindo emojis se necessário.
+  `;
 
     const result = await model.generateContent(prompt);
     const response = await result.response.text();
@@ -46,8 +51,8 @@ export async function POST(request: Request) {
         <ul class="list-disc list-inside pl-4 mb-2">
           ${ingredientOptions.map((ingredientOptions: string) => `<li class="text-lg">${ingredientOptions}</li>`).join('')}
         </ul>
-        ${Aditional ? `
-          <p class="text-lg mb-2"><strong>Ingredientes Adicionais:${Aditional}</strong></p>
+        ${additional ? `
+          <p class="text-lg mb-2"><strong>Ingredientes Adicionais:</strong></p>
           <ul class="list-disc list-inside pl-4 mb-2">
             ${formattedTips ? `<li class="text-lg">${formattedTips}</li>` : ''}
           </ul>` : ''}

@@ -1,4 +1,4 @@
-import { SectionTitle } from "@/app/components/section-title";
+import { SectionTitle } from "@/app/components/SectionTitle";
 import { CookingPot, HeadCircuit, Sparkle, Sliders, Footprints } from "@phosphor-icons/react";
 import { ItemsHow } from "./items-how-works";
 import Slider from "react-slick";
