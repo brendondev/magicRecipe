@@ -1,4 +1,4 @@
-import { Inter, IBM_Plex_Mono, Indie_Flower } from "next/font/google";
+import { Inter, Indie_Flower } from "next/font/google";
 import "./globals.css";
 import { ReactNode } from "react";
 import { Header } from "./components/header";

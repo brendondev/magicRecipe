@@ -25,11 +25,7 @@ export async function POST(request: Request) {
     Tempo de Cozinha: ${time} minutos
     ${additional ? 'Inclua ingredientes adicionais.' : 'Use apenas os ingredientes fornecidos.'}
     Tipo de Refeição: ${MealType}
-    ${
-      notes
-        ? `Notas adicionais do usuário: ${notes}` // Inclui o campo separado de notas no prompt
-        : ''
-    }
+    ${notes ? `Notas adicionais: ${notes}` : ''}
     Retorne apenas o preparo e o título da receita, incluindo emojis se necessário.
   `;
 
