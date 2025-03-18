@@ -24,7 +24,7 @@
     "dotenv": "^16.4.5",
     "framer-motion": "^10.11.2",
     "multiselect": "^0.9.12",
-    "next": "^14.2.10",
+    "next": "^14.2.21",
     "postcss": "^8.4.41",
     "primereact": "^10.8.2",
     "react": "^18.2.0",
