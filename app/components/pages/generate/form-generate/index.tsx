@@ -8,11 +8,21 @@ type RecipeModalProps = {
   isOpen: boolean;
   content: string | null;
   onClose: () => void;
-  onEdit: () => void;
+  formFields: React.ReactNode;
+  onGenerate: () => void;
+  isLoading: boolean;
 };
 
-const RecipeModal = ({ isOpen, content, onClose, onEdit }: RecipeModalProps) => {
+const RecipeModal = ({
+  isOpen,
+  content,
+  onClose,
+  formFields,
+  onGenerate,
+  isLoading,
+}: RecipeModalProps) => {
   const closeRef = useRef<HTMLButtonElement>(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -32,7 +42,7 @@ const RecipeModal = ({ isOpen, content, onClose, onEdit }: RecipeModalProps) => 
     return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, onClose]);
 
-  if (!isOpen || !content) return null;
+  if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
@@ -45,13 +55,41 @@ const RecipeModal = ({ isOpen, content, onClose, onEdit }: RecipeModalProps) => 
         >
           X
         </button>
-        <div
-          className="text-black"
-          dangerouslySetInnerHTML={{ __html: content }}
-        />
-        <Button className="mt-4" onClick={onEdit}>
-          Editar
-        </Button>
+        {isEditing ? (
+          <>
+            {formFields}
+            <div className="flex gap-2 mt-4">
+              <Button
+                disabled={isLoading}
+                onClick={() => {
+                  onGenerate();
+                  setIsEditing(false);
+                }}
+              >
+                {isLoading ? "Gerando..." : "Salvar"}
+              </Button>
+              <Button
+                onClick={() => {
+                  setIsEditing(false);
+                }}
+              >
+                Cancelar
+              </Button>
+            </div>
+          </>
+        ) : (
+          <>
+            {content && (
+              <div
+                className="text-black"
+                dangerouslySetInnerHTML={{ __html: content }}
+              />
+            )}
+            <Button className="mt-4" onClick={() => setIsEditing(true)}>
+              Editar
+            </Button>
+          </>
+        )}
       </div>
     </div>
   );
@@ -76,11 +114,6 @@ export const FormGenerate = () => {
   const [fat, setFat] = useState<number>(0);
 
   const formRef = useRef<HTMLElement | null>(null);
-
-  const handleEditRecipe = () => {
-    setShowRecipeModal(false);
-    formRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
 
   const handleGenerateRecipe = async () => {
     setIsLoading(true);
@@ -141,23 +174,24 @@ export const FormGenerate = () => {
       setIsLoading(false);
     }
   };
-  
-
-  return (
-    <section
-      ref={formRef}
-      className="container flex flex-col items-center justify-center border-gray-800 border-2 rounded-lg py-20 mb-10"
-    >
+  const renderFormFields = () => (
+    <>
       <h1 className="font-flower font-semibold text-3xl mb-5 flex gap-1">
         Cozinha <ChefHat />
       </h1>
-      <Basket size={40} className="text-red-400"/>
+      <Basket size={40} className="text-red-400" />
       <IngredientsItem
-        onChange={(selectedOptions) => setIngredients(selectedOptions?.map(option => option.value) || [])}
-        />
-      <ForkKnife size={40} className="text-red-400"/>
+        onChange={(selectedOptions) =>
+          setIngredients(selectedOptions?.map((option) => option.value) || [])
+        }
+      />
+      <ForkKnife size={40} className="text-red-400" />
       <UtensilsItem
-        onChange={(selectedOptions) => setSelectedUtensils(selectedOptions?.map(option => option.value) || [])}
+        onChange={(selectedOptions) =>
+          setSelectedUtensils(
+            selectedOptions?.map((option) => option.value) || []
+          )
+        }
       />
       <p>Quanto tempo para cozinhar? (Minutos)</p>
       <input
@@ -170,17 +204,11 @@ export const FormGenerate = () => {
       />
       <span className="mb-5">{time} minutos</span>
       <p>Selecione seu nível de cozinha!</p>
-      <ChefLevel
-        onChange={(value) => setChefLevel(value)}
-      />
+      <ChefLevel onChange={(value) => setChefLevel(value)} />
       <p>Escolha o tipo de refeição!</p>
-      <MealType
-        onChange={(value) => setSelectedMealType(value)}
-      />
+      <MealType onChange={(value) => setSelectedMealType(value)} />
       <div className="flex justify-center items-center mt-5 gap-2">
-        <Additional
-          onChange={(checked) => setIsAdditionalAllowed(checked)}
-        />
+        <Additional onChange={(checked) => setIsAdditionalAllowed(checked)} />
         <p>Permitir ingredientes adicionais?</p>
       </div>
       <Button
@@ -190,7 +218,6 @@ export const FormGenerate = () => {
         Dieta
       </Button>
       {showDietOptions && (
-
         <div className="flex flex-col items-center gap-2 mt-4 text-gray-50">
           <label className="flex flex-col items-start">
             <span>Proteína (g)</span>
@@ -220,42 +247,49 @@ export const FormGenerate = () => {
             />
           </label>
 
-        <div className="flex flex-col items-center gap-2 mt-4">
-          <input
-            type="number"
-            value={protein}
-            onChange={(e) => setProtein(Number(e.target.value))}
-            className="w-[200px] bg-gray-800 rounded-lg p-2 text-gray-50 placeholder:text-gray-400"
-            placeholder="Proteína (g)"
-          />
-          <input
-            type="number"
-            value={carbs}
-            onChange={(e) => setCarbs(Number(e.target.value))}
-            className="w-[200px] bg-gray-800 rounded-lg p-2 text-gray-50 placeholder:text-gray-400"
-            placeholder="Carboidratos (g)"
-          />
-          <input
-            type="number"
-            value={fat}
-            onChange={(e) => setFat(Number(e.target.value))}
-            className="w-[200px] bg-gray-800 rounded-lg p-2 text-gray-50 placeholder:text-gray-400"
-            placeholder="Gordura (g)"
-          />
-
+          <div className="flex flex-col items-center gap-2 mt-4">
+            <input
+              type="number"
+              value={protein}
+              onChange={(e) => setProtein(Number(e.target.value))}
+              className="w-[200px] bg-gray-800 rounded-lg p-2 text-gray-50 placeholder:text-gray-400"
+              placeholder="Proteína (g)"
+            />
+            <input
+              type="number"
+              value={carbs}
+              onChange={(e) => setCarbs(Number(e.target.value))}
+              className="w-[200px] bg-gray-800 rounded-lg p-2 text-gray-50 placeholder:text-gray-400"
+              placeholder="Carboidratos (g)"
+            />
+            <input
+              type="number"
+              value={fat}
+              onChange={(e) => setFat(Number(e.target.value))}
+              className="w-[200px] bg-gray-800 rounded-lg p-2 text-gray-50 placeholder:text-gray-400"
+              placeholder="Gordura (g)"
+            />
+          </div>
         </div>
       )}
-
       <div className="rounded-lg placeholder:text-gray-400 text-gray-50 p-4 focus:outline-none flex flex-col items-center focus:ring-2 ring-red-500">
-      <textarea 
-            placeholder="Deseja especificar algo? Digite aqui..."
-            maxLength={50}
-            onChange={(e) => setNotes(e.target.value)}
-            value={notes}
-            className="resize-none w-full h-[100px] bg-gray-800 rounded-lg placeholder:text-gray-400 text-gray-50 p-4 focus:outline-none focus:ring-2 ring-red-500"
-          />
-
+        <textarea
+          placeholder="Deseja especificar algo? Digite aqui..."
+          maxLength={50}
+          onChange={(e) => setNotes(e.target.value)}
+          value={notes}
+          className="resize-none w-full h-[100px] bg-gray-800 rounded-lg placeholder:text-gray-400 text-gray-50 p-4 focus:outline-none focus:ring-2 ring-red-500"
+        />
       </div>
+    </>
+  );
+
+  return (
+    <section
+      ref={formRef}
+      className="container flex flex-col items-center justify-center border-gray-800 border-2 rounded-lg py-20 mb-10"
+    >
+      {renderFormFields()}
       <Button
         className="mt-5 py-1"
         onClick={handleGenerateRecipe}
@@ -281,7 +315,9 @@ export const FormGenerate = () => {
         isOpen={showRecipeModal}
         content={response}
         onClose={() => setShowRecipeModal(false)}
-        onEdit={handleEditRecipe}
+        formFields={renderFormFields()}
+        onGenerate={handleGenerateRecipe}
+        isLoading={isLoading}
       />
 
     </section>
