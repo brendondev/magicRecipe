@@ -37,15 +37,19 @@ export const FormGenerate = () => {
         }),
       });
   
-      if (!response.ok) {
-        throw new Error(`Erro na solicitação: ${response.statusText}`);
+      const contentType = response.headers.get('content-type') || '';
+      const data = contentType.includes('application/json')
+        ? await response.json().catch(() => null)
+        : await response.text().catch(() => null);
+
+      if (!response.ok || !data) {
+        setErrorMessage('Serviço temporariamente indisponível');
+        setShowErrorModal(true);
+        return;
       }
-  
-      const text = await response.text();
-      console.log('Resposta do fetch:', text);
-  
-      const result = JSON.parse(text);
-  
+
+      const result = typeof data === 'string' ? { instructions: data } : data;
+
       if (result.instructions) {
         setResponse(result.instructions);
         console.log('Instruções recebidas:', result.instructions);

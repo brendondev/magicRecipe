@@ -9,7 +9,7 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Faltam parâmetros na solicitação' }, { status: 400 });
     }
 
-    const apiKey = process.env.NEXT_PUBLIC_GEMINI_API_KEY;
+    const apiKey = process.env.GEMINI_API_KEY;
     if (!apiKey) {
       return NextResponse.json({ error: 'Chave da API não configurada' }, { status: 500 });
     }
@@ -29,11 +29,26 @@ export async function POST(request: Request) {
     Retorne apenas o preparo e o título da receita, incluindo emojis se necessário.
   `;
 
+
     try {
       // The SDK expects the prompt as an array of strings or parts.
       // Passing a plain string can result in a 500 from the server.
       const result = await model.generateContent([prompt]);
       const response = result.response.text();
+
+    // The SDK expects the prompt in a structured `contents` object.
+    // Passing a plain string can result in a 500 from the server.
+    const timeoutMs = 15000;
+    const result = await Promise.race([
+      model.generateContent({
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      }),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('timeout')), timeoutMs)
+      ),
+    ]);
+    const response = result.response.text();
+
 
       const [recipeTitleAndSteps, tipsText] = response.split('Dicas:');
       const [recipeTitle, ...stepsArray] = recipeTitleAndSteps.split('\n').filter(Boolean);
@@ -88,7 +103,19 @@ export async function POST(request: Request) {
       return NextResponse.json({ instructions: fallback }, { status: 200 });
     }
   } catch (error) {
+    return NextResponse.json({ instructions: htmlContent });
+  } catch (error: unknown) {
+
     console.error('Erro ao processar a solicitação:', error);
-    return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 });
+    if (error instanceof Error && error.message === 'timeout') {
+      return NextResponse.json(
+        { error: 'Tempo excedido ao gerar receita' },
+        { status: 504 }
+      );
+    }
+
+    const message =
+      error instanceof Error ? error.message : 'Erro interno do servidor';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
