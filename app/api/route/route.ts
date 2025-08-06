@@ -58,8 +58,9 @@ export async function POST(request: Request) {
       carbs,
       fat,
     } = await request.json();
-    const macrosProvided =
-      protein !== undefined && carbs !== undefined && fat !== undefined;
+    const macrosProvided = [protein, carbs, fat].every(
+      (m) => m !== undefined
+    );
 
     if (
       !ChefLevel ||
@@ -111,7 +112,7 @@ export async function POST(request: Request) {
 
     const macrosLine = macrosProvided
       ? `Macros desejadas (em gramas): Proteína: ${protein} g, Carboidratos: ${carbs} g, Gordura: ${fat} g`
-      : '';
+      : 'Faça a receita sem especificar proteína, carboidratos e gordura.';
 
     const prompt = `
     Crie uma receita com base nas seguintes informações:
