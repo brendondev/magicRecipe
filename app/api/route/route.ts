@@ -31,9 +31,15 @@ export async function POST(request: Request) {
 
     // The SDK expects the prompt in a structured `contents` object.
     // Passing a plain string can result in a 500 from the server.
-    const result = await model.generateContent({
-      contents: [{ role: 'user', parts: [{ text: prompt }] }],
-    });
+    const timeoutMs = 15000;
+    const result = await Promise.race([
+      model.generateContent({
+        contents: [{ role: 'user', parts: [{ text: prompt }] }],
+      }),
+      new Promise<never>((_, reject) =>
+        setTimeout(() => reject(new Error('timeout')), timeoutMs)
+      ),
+    ]);
     const response = result.response.text();
 
     const [recipeTitleAndSteps, tipsText] = response.split('Dicas:');
@@ -67,8 +73,17 @@ export async function POST(request: Request) {
     `;
 
     return NextResponse.json({ instructions: htmlContent });
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Erro ao processar a solicitação:', error);
-    return NextResponse.json({ error: 'Erro interno do servidor' }, { status: 500 });
+    if (error instanceof Error && error.message === 'timeout') {
+      return NextResponse.json(
+        { error: 'Tempo excedido ao gerar receita' },
+        { status: 504 }
+      );
+    }
+
+    const message =
+      error instanceof Error ? error.message : 'Erro interno do servidor';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
