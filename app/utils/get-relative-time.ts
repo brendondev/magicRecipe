@@ -5,7 +5,7 @@
  */
 export function getRelativeTimeString(
   date: Date | number,
-  lang = navigator.language
+  lang?: string
 ): string {
   // Allow dates or times to be passed
   const timeMs = typeof date === "number" ? date : date.getTime();
@@ -45,6 +45,8 @@ export function getRelativeTimeString(
   const divisor = unitIndex ? cutoffs[unitIndex - 1] : 1;
 
   // Intl.RelativeTimeFormat do its magic
-  const rtf = new Intl.RelativeTimeFormat(lang, { numeric: "auto" });
+  const language =
+    lang ?? (typeof navigator === "undefined" ? "en-US" : navigator.language);
+  const rtf = new Intl.RelativeTimeFormat(language, { numeric: "auto" });
   return rtf.format(Math.floor(deltaSeconds / divisor), units[unitIndex]);
 }
