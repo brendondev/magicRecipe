@@ -14,17 +14,11 @@ type RecipeModalProps = {
   isOpen: boolean;
   content: string | null;
   onClose: () => void;
-  onSave: (updatedContent: string) => void;
+  onEdit: () => void;
 };
 
-const RecipeModal = ({ isOpen, content, onClose, onSave }: RecipeModalProps) => {
+const RecipeModal = ({ isOpen, content, onClose, onEdit }: RecipeModalProps) => {
   const closeRef = useRef<HTMLButtonElement>(null);
-  const [isEditing, setIsEditing] = useState(false);
-  const [editableContent, setEditableContent] = useState(content || "");
-
-  useEffect(() => {
-    setEditableContent(content || "");
-  }, [content]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -57,43 +51,13 @@ const RecipeModal = ({ isOpen, content, onClose, onSave }: RecipeModalProps) => 
         >
           X
         </button>
-        {isEditing ? (
-          <>
-            <textarea
-              className="w-full h-[300px] text-black border border-gray-300 rounded"
-              value={editableContent}
-              onChange={(e) => setEditableContent(e.target.value)}
-            />
-            <div className="flex gap-2 mt-4">
-              <Button
-                onClick={() => {
-                  onSave(editableContent);
-                  setIsEditing(false);
-                }}
-              >
-                Salvar
-              </Button>
-              <Button
-                onClick={() => {
-                  setEditableContent(content || "");
-                  setIsEditing(false);
-                }}
-              >
-                Cancelar
-              </Button>
-            </div>
-          </>
-        ) : (
-          <>
-            <div
-              className="text-black"
-              dangerouslySetInnerHTML={{ __html: content }}
-            />
-            <Button className="mt-4" onClick={() => setIsEditing(true)}>
-              Editar
-            </Button>
-          </>
-        )}
+        <div
+          className="text-black"
+          dangerouslySetInnerHTML={{ __html: content }}
+        />
+        <Button className="mt-4" onClick={onEdit}>
+          Editar
+        </Button>
       </div>
     </div>
   );
@@ -127,8 +91,9 @@ export const FormGenerate = () => {
     }
   }, []);
 
-  const handleSaveRecipe = (edited: string) => {
-    setResponse(edited);
+  const handleEditRecipe = () => {
+    setShowRecipeModal(false);
+    formRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   const handleGenerateRecipe = async () => {
@@ -320,7 +285,7 @@ export const FormGenerate = () => {
         isOpen={showRecipeModal}
         content={response}
         onClose={() => setShowRecipeModal(false)}
-        onSave={handleSaveRecipe}
+        onEdit={handleEditRecipe}
       />
 
     </section>
