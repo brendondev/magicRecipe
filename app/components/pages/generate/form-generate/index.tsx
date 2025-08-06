@@ -4,6 +4,12 @@ import  {ChefLevel, IngredientsItem, UtensilsItem } from "@/app/components/array
 import { Additional, MealType } from "@/app/components/array-select";
 import { Button } from "@/app/components/button";
 
+type StoredRecipe = {
+  title: string;
+  instructions: string;
+  createdAt: number;
+};
+
 type RecipeModalProps = {
   isOpen: boolean;
   content: string | null;
@@ -110,8 +116,16 @@ export const FormGenerate = () => {
   const [protein, setProtein] = useState<number | undefined>(undefined);
   const [carbs, setCarbs] = useState<number | undefined>(undefined);
   const [fat, setFat] = useState<number | undefined>(undefined);
+  const [recentRecipes, setRecentRecipes] = useState<StoredRecipe[]>([]);
 
   const formRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const stored = localStorage.getItem('recent-recipes');
+    if (stored) {
+      setRecentRecipes(JSON.parse(stored));
+    }
+  }, []);
 
   const handleSaveRecipe = (edited: string) => {
     setResponse(edited);
@@ -162,12 +176,14 @@ export const FormGenerate = () => {
       if (result.instructions) {
         setResponse(result.instructions);
         setShowRecipeModal(true);
-        if (result.title) {
-          const stored = localStorage.getItem('recent-recipes');
-          const recent = stored ? JSON.parse(stored) : [];
-          recent.push({ title: result.title, createdAt: Date.now() });
-          localStorage.setItem('recent-recipes', JSON.stringify(recent));
-        }
+        const newRecipe: StoredRecipe = {
+          title: result.title || 'Receita',
+          instructions: result.instructions,
+          createdAt: Date.now(),
+        };
+        const updated = [...recentRecipes, newRecipe];
+        setRecentRecipes(updated);
+        localStorage.setItem('recent-recipes', JSON.stringify(updated));
         console.log('Instruções recebidas:', result.instructions);
       } else {
         setErrorMessage("Erro ao encontrar uma resposta.");
@@ -184,6 +200,7 @@ export const FormGenerate = () => {
   
 
   return (
+    <>
     <section
       ref={formRef}
       className="container flex flex-col items-center justify-center border-gray-800 border-2 rounded-lg py-20 mb-10"
@@ -307,5 +324,24 @@ export const FormGenerate = () => {
       />
 
     </section>
+    <aside className="fixed top-0 right-0 w-60 h-full overflow-y-auto bg-gray-800 text-gray-50 p-4">
+      <h2 className="font-bold mb-2">Receitas recentes</h2>
+      <ul className="flex flex-col gap-2">
+        {recentRecipes.map((recipe, index) => (
+          <li key={index}>
+            <button
+              className="text-left w-full hover:underline"
+              onClick={() => {
+                setResponse(recipe.instructions);
+                setShowRecipeModal(true);
+              }}
+            >
+              {recipe.title}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </aside>
+    </>
   );
 };
