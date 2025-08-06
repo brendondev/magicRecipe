@@ -29,9 +29,11 @@ export async function POST(request: Request) {
     Retorne apenas o preparo e o título da receita, incluindo emojis se necessário.
   `;
 
-    // The SDK expects the prompt as an array of strings or parts.
+    // The SDK expects the prompt in a structured `contents` object.
     // Passing a plain string can result in a 500 from the server.
-    const result = await model.generateContent([prompt]);
+    const result = await model.generateContent({
+      contents: [{ role: 'user', parts: [{ text: prompt }] }],
+    });
     const response = result.response.text();
 
     const [recipeTitleAndSteps, tipsText] = response.split('Dicas:');
