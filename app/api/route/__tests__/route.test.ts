@@ -42,6 +42,7 @@ describe('POST /api/route', () => {
     expect(mockGenerateContent).toHaveBeenCalled();
     expect(json.instructions).toContain('Recipe Title');
     expect(json.instructions).toContain('Step 1');
+    expect(json.title).toBe('Recipe Title');
   });
 
   it('returns fallback instructions when generation fails', async () => {
@@ -58,6 +59,7 @@ describe('POST /api/route', () => {
 
     expect(mockGenerateContent).toHaveBeenCalled();
     expect(json.instructions).toContain('Receita simples de Breakfast');
+    expect(json.title).toBe('Receita simples de Breakfast');
   });
 
   it('returns fallback instructions when API key is missing', async () => {
@@ -73,5 +75,6 @@ describe('POST /api/route', () => {
 
     expect(mockGenerateContent).not.toHaveBeenCalled();
     expect(json.instructions).toContain('Receita simples de Breakfast');
+    expect(json.title).toBe('Receita simples de Breakfast');
   });
 });

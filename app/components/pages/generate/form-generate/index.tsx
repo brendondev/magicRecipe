@@ -48,10 +48,17 @@ export const FormGenerate = () => {
         return;
       }
 
-      const result = typeof data === 'string' ? { instructions: data } : data;
+      const result =
+        typeof data === 'string' ? { instructions: data, title: '' } : data;
 
       if (result.instructions) {
         setResponse(result.instructions);
+        if (result.title) {
+          const stored = localStorage.getItem('recent-recipes');
+          const recent = stored ? JSON.parse(stored) : [];
+          recent.push({ title: result.title, createdAt: Date.now() });
+          localStorage.setItem('recent-recipes', JSON.stringify(recent));
+        }
         console.log('Instruções recebidas:', result.instructions);
       } else {
         setErrorMessage("Erro ao encontrar uma resposta.");

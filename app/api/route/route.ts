@@ -66,7 +66,11 @@ export async function POST(request: Request) {
         selectedUtensils,
         time,
       });
-      return NextResponse.json({ instructions: fallback }, { status: 200 });
+      const fallbackTitle = `Receita simples de ${MealType}`;
+      return NextResponse.json(
+        { title: fallbackTitle, instructions: fallback },
+        { status: 200 }
+      );
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
@@ -136,7 +140,10 @@ export async function POST(request: Request) {
         </div>
       `;
 
-      return NextResponse.json({ instructions: htmlContent });
+      return NextResponse.json({
+        title: formattedTitle,
+        instructions: htmlContent,
+      });
     } catch (error) {
       console.error('Falha ao gerar conteúdo com Gemini:', error);
       const fallback = buildFallback({
@@ -146,7 +153,11 @@ export async function POST(request: Request) {
         selectedUtensils,
         time,
       });
-      return NextResponse.json({ instructions: fallback }, { status: 200 });
+      const fallbackTitle = `Receita simples de ${MealType}`;
+      return NextResponse.json(
+        { title: fallbackTitle, instructions: fallback },
+        { status: 200 }
+      );
     }
   } catch (error: unknown) {
     console.error('Erro ao processar a solicitação:', error);
