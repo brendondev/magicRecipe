@@ -7,12 +7,14 @@ function buildFallback({
   ingredientOptions,
   selectedUtensils,
   time,
+  macros,
 }: {
   MealType: string;
   ChefLevel: string;
   ingredientOptions: string[];
   selectedUtensils: string[];
   time: number;
+  macros: { protein: number; carbs: number; fat: number };
 }) {
   return `
         <div class="p-4 max-w-2xl mx-auto bg-white shadow-md rounded-lg">
@@ -31,6 +33,7 @@ function buildFallback({
               .join('')}
           </ul>
           <p class="text-lg mb-2"><strong>Tempo de Cozinha:</strong> ${time} minutos</p>
+          <p class="text-lg mb-2"><strong>Macros:</strong> Proteína: ${macros.protein} g, Carboidratos: ${macros.carbs} g, Gordura: ${macros.fat} g</p>
           <h3 class="text-xl font-semibold mb-2">Modo de Preparo:</h3>
           <p class="text-lg">Combine os ingredientes e cozinhe usando os utensílios selecionados. Ajuste os temperos a gosto e aproveite!</p>
         </div>
@@ -39,7 +42,18 @@ function buildFallback({
 
 export async function POST(request: Request) {
   try {
-    const { ChefLevel, ingredientOptions, selectedUtensils, time, additional, MealType, notes } = await request.json();
+    const {
+      ChefLevel,
+      ingredientOptions,
+      selectedUtensils,
+      time,
+      additional,
+      MealType,
+      notes,
+      protein,
+      carbs,
+      fat,
+    } = await request.json();
 
     if (
       !ChefLevel ||
@@ -48,10 +62,20 @@ export async function POST(request: Request) {
       !time ||
       additional === undefined ||
       !MealType ||
-      notes === undefined
+      notes === undefined ||
+      protein === undefined ||
+      carbs === undefined ||
+      fat === undefined
     ) {
       return NextResponse.json(
         { error: 'Faltam parâmetros na solicitação' },
+        { status: 400 }
+      );
+    }
+
+    if ([protein, carbs, fat].some((m) => typeof m !== 'number' || Number.isNaN(m))) {
+      return NextResponse.json(
+        { error: 'Macros inválidas' },
         { status: 400 }
       );
     }
@@ -65,6 +89,7 @@ export async function POST(request: Request) {
         ingredientOptions,
         selectedUtensils,
         time,
+        macros: { protein, carbs, fat },
       });
       const fallbackTitle = `Receita simples de ${MealType}`;
       return NextResponse.json(
@@ -84,6 +109,7 @@ export async function POST(request: Request) {
     Tempo de Cozinha: ${time} minutos
     ${additional ? 'Inclua ingredientes adicionais.' : 'Use apenas os ingredientes fornecidos.'}
     Tipo de Refeição: ${MealType}
+    Macros desejadas (em gramas): Proteína: ${protein} g, Carboidratos: ${carbs} g, Gordura: ${fat} g
     ${notes ? `Notas adicionais: ${notes}` : ''}
     Retorne apenas o preparo e o título da receita, incluindo emojis se necessário.
   `;
@@ -135,6 +161,7 @@ export async function POST(request: Request) {
               .join('')}
           </ul>
           <p class="text-lg mb-2"><strong>Tempo de Cozinha:</strong> ${time} minutos</p>
+          <p class="text-lg mb-2"><strong>Macros:</strong> Proteína: ${protein} g, Carboidratos: ${carbs} g, Gordura: ${fat} g</p>
           <h3 class="text-xl font-semibold mb-2">Modo de Preparo:</h3>
           <p class="text-lg">${formattedRecipe}</p>
         </div>
@@ -152,6 +179,7 @@ export async function POST(request: Request) {
         ingredientOptions,
         selectedUtensils,
         time,
+        macros: { protein, carbs, fat },
       });
       const fallbackTitle = `Receita simples de ${MealType}`;
       return NextResponse.json(
