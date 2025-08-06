@@ -190,6 +190,36 @@ export const FormGenerate = () => {
         Dieta
       </Button>
       {showDietOptions && (
+
+        <div className="flex flex-col items-center gap-2 mt-4 text-gray-50">
+          <label className="flex flex-col items-start">
+            <span>Proteína (g)</span>
+            <input
+              type="number"
+              value={protein}
+              onChange={(e) => setProtein(Number(e.target.value))}
+              className="w-[200px] bg-gray-800 rounded-lg p-2 text-gray-50"
+            />
+          </label>
+          <label className="flex flex-col items-start">
+            <span>Carboidratos (g)</span>
+            <input
+              type="number"
+              value={carbs}
+              onChange={(e) => setCarbs(Number(e.target.value))}
+              className="w-[200px] bg-gray-800 rounded-lg p-2 text-gray-50"
+            />
+          </label>
+          <label className="flex flex-col items-start">
+            <span>Gordura (g)</span>
+            <input
+              type="number"
+              value={fat}
+              onChange={(e) => setFat(Number(e.target.value))}
+              className="w-[200px] bg-gray-800 rounded-lg p-2 text-gray-50"
+            />
+          </label>
+
         <div className="flex flex-col items-center gap-2 mt-4">
           <input
             type="number"
@@ -212,6 +242,7 @@ export const FormGenerate = () => {
             className="w-[200px] bg-gray-800 rounded-lg p-2 text-gray-50 placeholder:text-gray-400"
             placeholder="Gordura (g)"
           />
+
         </div>
       )}
 
