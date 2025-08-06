@@ -30,7 +30,21 @@ const MOCK_CONTACTS = [
   },
 ];
 
-export const HeroSection = () => {
+const DEFAULT_TAGS = [
+  "#saudavel",
+  "#vegano",
+  "#semgluten",
+  "#lowcarb",
+  "#rapido",
+  "#caseiro",
+  "#sustentavel",
+];
+
+type HeroSectionProps = {
+  tags?: string[];
+};
+
+export const HeroSection = ({ tags = DEFAULT_TAGS }: HeroSectionProps) => {
   return (
       <section className="w-full lg:h-[655px] bg-hero-image bg-cover bg-center bg-no-repeat flex flex-col justify-end sm:pb-5 pt-32 lg:pb-[50px]">
         <div className="container flex items-start justify-between flex-col-reverse lg:flex-row">
@@ -44,8 +58,8 @@ export const HeroSection = () => {
               crie a receita perfeita para surpreender seu paladar.
             </p>
             <div className="flex flex-wrap gap-x-2 gap-y-3 lg:max-w-[340px]">
-              {Array.from({ length: 7 }).map((_, index) => (
-                <TagsBadge name="#saudavel" key={index} />
+              {tags.map((tag, index) => (
+                <TagsBadge name={tag} key={`${tag}-${index}`} />
               ))}
             </div>
             <div className="mt-6 lg:mt-10 flex sm:items-center sm:gap-5 flex-col sm:flex-row">
