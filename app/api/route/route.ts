@@ -56,7 +56,8 @@ export async function POST(request: Request) {
       );
     }
 
-    const apiKey = process.env.GEMINI_API_KEY;
+    // Read Gemini API key from server-side environment variable
+    const { GEMINI_API_KEY: apiKey } = process.env;
     if (!apiKey) {
       const fallback = buildFallback({
         MealType,

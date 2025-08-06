@@ -20,3 +20,8 @@ GEMINI_API_KEY=''
 
 Substitua os valores conforme necessário.
 
+## Deploy
+
+Defina as mesmas variáveis de ambiente no provedor de hospedagem escolhido.
+Use `GEMINI_API_KEY` (sem o prefixo `NEXT_PUBLIC_`) para fornecer a chave da API do Gemini apenas no servidor.
+
