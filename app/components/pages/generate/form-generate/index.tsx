@@ -107,9 +107,9 @@ export const FormGenerate = () => {
   const [showRecipeModal, setShowRecipeModal] = useState<boolean>(false);
   const [notes, setNotes] = useState('');
   const [showDietOptions, setShowDietOptions] = useState<boolean>(false);
-  const [protein, setProtein] = useState<number>(0);
-  const [carbs, setCarbs] = useState<number>(0);
-  const [fat, setFat] = useState<number>(0);
+  const [protein, setProtein] = useState<number | undefined>(undefined);
+  const [carbs, setCarbs] = useState<number | undefined>(undefined);
+  const [fat, setFat] = useState<number | undefined>(undefined);
 
   const formRef = useRef<HTMLElement | null>(null);
 
@@ -121,23 +121,28 @@ export const FormGenerate = () => {
     setIsLoading(true);
   
     try {
-      const response = await fetch('/api/route', { 
+      const body: Record<string, any> = {
+        ChefLevel: selectedChefLevel,
+        ingredientOptions: selectedIngredients,
+        selectedUtensils: selectedUtensils,
+        time: time,
+        additional: selectedAdditionalAllowed,
+        MealType: selectedMealType,
+        notes,
+      };
+
+      if (showDietOptions) {
+        if (protein !== undefined) body.protein = protein;
+        if (carbs !== undefined) body.carbs = carbs;
+        if (fat !== undefined) body.fat = fat;
+      }
+
+      const response = await fetch('/api/route', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ChefLevel: selectedChefLevel,
-          ingredientOptions: selectedIngredients,
-          selectedUtensils: selectedUtensils,
-          time: time,
-          additional: selectedAdditionalAllowed,
-          MealType: selectedMealType,
-          notes,
-          protein,
-          carbs,
-          fat,
-        }),
+        body: JSON.stringify(body),
       });
   
       const contentType = response.headers.get('content-type') || '';
@@ -220,64 +225,46 @@ export const FormGenerate = () => {
       </div>
       <Button
         className="mt-4 py-1"
-        onClick={() => setShowDietOptions(!showDietOptions)}
+        onClick={() => {
+          if (showDietOptions) {
+            setProtein(undefined);
+            setCarbs(undefined);
+            setFat(undefined);
+          }
+          setShowDietOptions(!showDietOptions);
+        }}
       >
         Dieta
       </Button>
       {showDietOptions && (
-
         <div className="flex flex-col items-center gap-2 mt-4 text-gray-50">
-          <label className="flex flex-col items-start">
-            <span>Proteína (g)</span>
-            <input
-              type="number"
-              value={protein}
-              onChange={(e) => setProtein(Number(e.target.value))}
-              className="w-[200px] bg-gray-800 rounded-lg p-2 text-gray-50"
-            />
-          </label>
-          <label className="flex flex-col items-start">
-            <span>Carboidratos (g)</span>
-            <input
-              type="number"
-              value={carbs}
-              onChange={(e) => setCarbs(Number(e.target.value))}
-              className="w-[200px] bg-gray-800 rounded-lg p-2 text-gray-50"
-            />
-          </label>
-          <label className="flex flex-col items-start">
-            <span>Gordura (g)</span>
-            <input
-              type="number"
-              value={fat}
-              onChange={(e) => setFat(Number(e.target.value))}
-              className="w-[200px] bg-gray-800 rounded-lg p-2 text-gray-50"
-            />
-          </label>
-
-        <div className="flex flex-col items-center gap-2 mt-4">
           <input
             type="number"
-            value={protein}
-            onChange={(e) => setProtein(Number(e.target.value))}
+            value={protein ?? ''}
+            onChange={(e) =>
+              setProtein(e.target.value ? Number(e.target.value) : undefined)
+            }
             className="w-[200px] bg-gray-800 rounded-lg p-2 text-gray-50 placeholder:text-gray-400"
             placeholder="Proteína (g)"
           />
           <input
             type="number"
-            value={carbs}
-            onChange={(e) => setCarbs(Number(e.target.value))}
+            value={carbs ?? ''}
+            onChange={(e) =>
+              setCarbs(e.target.value ? Number(e.target.value) : undefined)
+            }
             className="w-[200px] bg-gray-800 rounded-lg p-2 text-gray-50 placeholder:text-gray-400"
             placeholder="Carboidratos (g)"
           />
           <input
             type="number"
-            value={fat}
-            onChange={(e) => setFat(Number(e.target.value))}
+            value={fat ?? ''}
+            onChange={(e) =>
+              setFat(e.target.value ? Number(e.target.value) : undefined)
+            }
             className="w-[200px] bg-gray-800 rounded-lg p-2 text-gray-50 placeholder:text-gray-400"
             placeholder="Gordura (g)"
           />
-
         </div>
       )}
 
