@@ -3,6 +3,8 @@ import { Basket, Check, ChefHat, ForkKnife } from "@phosphor-icons/react/dist/ss
 import  {ChefLevel, IngredientsItem, UtensilsItem } from "@/app/components/array-select";
 import { Additional, MealType } from "@/app/components/array-select";
 import { Button } from "@/app/components/button";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 type StoredRecipe = {
   title: string;
@@ -19,6 +21,18 @@ type RecipeModalProps = {
 
 const RecipeModal = ({ isOpen, content, onClose, onEdit }: RecipeModalProps) => {
   const closeRef = useRef<HTMLButtonElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  const handleDownloadPdf = async () => {
+    if (!contentRef.current) return;
+    const canvas = await html2canvas(contentRef.current);
+    const imgData = canvas.toDataURL("image/png");
+    const pdf = new jsPDF("p", "mm", "a4");
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
+    pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
+    pdf.save("receita.pdf");
+  };
 
   useEffect(() => {
     if (!isOpen) return;
@@ -52,12 +66,14 @@ const RecipeModal = ({ isOpen, content, onClose, onEdit }: RecipeModalProps) => 
           X
         </button>
         <div
+          ref={contentRef}
           className="text-black"
           dangerouslySetInnerHTML={{ __html: content }}
         />
-        <Button className="mt-4" onClick={onEdit}>
-          Editar
-        </Button>
+        <div className="mt-4 flex gap-2">
+          <Button onClick={onEdit}>Editar</Button>
+          <Button onClick={handleDownloadPdf}>Baixar PDF</Button>
+        </div>
       </div>
     </div>
   );
