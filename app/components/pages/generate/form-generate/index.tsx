@@ -329,15 +329,15 @@ export const FormGenerate = () => {
       <ul className="flex flex-col gap-2">
         {recentRecipes.map((recipe, index) => (
           <li key={index}>
-            <button
-              className="text-left w-full hover:underline"
+            <Button
+              className="w-full text-left hover:underline overflow-hidden text-ellipsis whitespace-nowrap !justify-start"
               onClick={() => {
                 setResponse(recipe.instructions);
                 setShowRecipeModal(true);
               }}
             >
               {recipe.title}
-            </button>
+            </Button>
           </li>
         ))}
       </ul>
