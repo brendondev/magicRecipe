@@ -38,7 +38,8 @@ export const FormGenerate = () => {
       });
   
       if (!response.ok) {
-        throw new Error(`Erro na solicitação: ${response.statusText}`);
+        const { error } = await response.json();
+        throw new Error(`Erro na solicitação: ${error || response.statusText}`);
       }
   
       const text = await response.text();
