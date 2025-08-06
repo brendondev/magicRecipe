@@ -83,4 +83,29 @@ describe('POST /api/route', () => {
     expect(json.instructions).toContain('Proteína: 30 g');
     expect(json.title).toBe('Receita simples de Breakfast');
   });
+
+  it('succeeds without macros and omits macros line', async () => {
+    process.env.GEMINI_API_KEY = 'test';
+    mockGenerateContent.mockResolvedValue({
+      response: { text: () => 'Recipe Title\nStep 1\nDicas: Tip 1' },
+    });
+
+    const body = { ...baseBody } as any;
+    delete body.protein;
+    delete body.carbs;
+    delete body.fat;
+
+    const request = new Request('http://localhost', {
+      method: 'POST',
+      body: JSON.stringify(body),
+    });
+
+    const res = await POST(request);
+    const json = await res.json();
+
+    expect(mockGenerateContent).toHaveBeenCalled();
+    expect(json.instructions).toContain('Recipe Title');
+    expect(json.instructions).not.toContain('Macros:');
+    expect(json.instructions).not.toContain('Proteína:');
+  });
 });
