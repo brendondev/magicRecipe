@@ -8,9 +8,10 @@ type RecipeModalProps = {
   isOpen: boolean;
   content: string | null;
   onClose: () => void;
+  onEdit: () => void;
 };
 
-const RecipeModal = ({ isOpen, content, onClose }: RecipeModalProps) => {
+const RecipeModal = ({ isOpen, content, onClose, onEdit }: RecipeModalProps) => {
   const closeRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -48,6 +49,9 @@ const RecipeModal = ({ isOpen, content, onClose }: RecipeModalProps) => {
           className="text-black"
           dangerouslySetInnerHTML={{ __html: content }}
         />
+        <Button className="mt-4" onClick={onEdit}>
+          Editar
+        </Button>
       </div>
     </div>
   );
@@ -70,6 +74,13 @@ export const FormGenerate = () => {
   const [protein, setProtein] = useState<number>(0);
   const [carbs, setCarbs] = useState<number>(0);
   const [fat, setFat] = useState<number>(0);
+
+  const formRef = useRef<HTMLElement | null>(null);
+
+  const handleEditRecipe = () => {
+    setShowRecipeModal(false);
+    formRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   const handleGenerateRecipe = async () => {
     setIsLoading(true);
@@ -133,7 +144,10 @@ export const FormGenerate = () => {
   
 
   return (
-    <section className="container flex flex-col items-center justify-center border-gray-800 border-2 rounded-lg py-20 mb-10">
+    <section
+      ref={formRef}
+      className="container flex flex-col items-center justify-center border-gray-800 border-2 rounded-lg py-20 mb-10"
+    >
       <h1 className="font-flower font-semibold text-3xl mb-5 flex gap-1">
         Cozinha <ChefHat />
       </h1>
@@ -236,8 +250,9 @@ export const FormGenerate = () => {
         isOpen={showRecipeModal}
         content={response}
         onClose={() => setShowRecipeModal(false)}
+        onEdit={handleEditRecipe}
       />
-   
+
     </section>
   );
 };
