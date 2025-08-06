@@ -4,15 +4,27 @@ import  {ChefLevel, IngredientsItem, UtensilsItem } from "@/app/components/array
 import { Additional, MealType } from "@/app/components/array-select";
 import { Button } from "@/app/components/button";
 
+type StoredRecipe = {
+  title: string;
+  instructions: string;
+  createdAt: number;
+};
+
 type RecipeModalProps = {
   isOpen: boolean;
   content: string | null;
   onClose: () => void;
-  onEdit: () => void;
+  onSave: (updatedContent: string) => void;
 };
 
-const RecipeModal = ({ isOpen, content, onClose, onEdit }: RecipeModalProps) => {
+const RecipeModal = ({ isOpen, content, onClose, onSave }: RecipeModalProps) => {
   const closeRef = useRef<HTMLButtonElement>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editableContent, setEditableContent] = useState(content || "");
+
+  useEffect(() => {
+    setEditableContent(content || "");
+  }, [content]);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -45,13 +57,43 @@ const RecipeModal = ({ isOpen, content, onClose, onEdit }: RecipeModalProps) => 
         >
           X
         </button>
-        <div
-          className="text-black"
-          dangerouslySetInnerHTML={{ __html: content }}
-        />
-        <Button className="mt-4" onClick={onEdit}>
-          Editar
-        </Button>
+        {isEditing ? (
+          <>
+            <textarea
+              className="w-full h-[300px] text-black border border-gray-300 rounded"
+              value={editableContent}
+              onChange={(e) => setEditableContent(e.target.value)}
+            />
+            <div className="flex gap-2 mt-4">
+              <Button
+                onClick={() => {
+                  onSave(editableContent);
+                  setIsEditing(false);
+                }}
+              >
+                Salvar
+              </Button>
+              <Button
+                onClick={() => {
+                  setEditableContent(content || "");
+                  setIsEditing(false);
+                }}
+              >
+                Cancelar
+              </Button>
+            </div>
+          </>
+        ) : (
+          <>
+            <div
+              className="text-black"
+              dangerouslySetInnerHTML={{ __html: content }}
+            />
+            <Button className="mt-4" onClick={() => setIsEditing(true)}>
+              Editar
+            </Button>
+          </>
+        )}
       </div>
     </div>
   );
@@ -71,38 +113,50 @@ export const FormGenerate = () => {
   const [showRecipeModal, setShowRecipeModal] = useState<boolean>(false);
   const [notes, setNotes] = useState('');
   const [showDietOptions, setShowDietOptions] = useState<boolean>(false);
-  const [protein, setProtein] = useState<number>(0);
-  const [carbs, setCarbs] = useState<number>(0);
-  const [fat, setFat] = useState<number>(0);
+  const [protein, setProtein] = useState<number | undefined>(undefined);
+  const [carbs, setCarbs] = useState<number | undefined>(undefined);
+  const [fat, setFat] = useState<number | undefined>(undefined);
+  const [recentRecipes, setRecentRecipes] = useState<StoredRecipe[]>([]);
 
   const formRef = useRef<HTMLElement | null>(null);
 
-  const handleEditRecipe = () => {
-    setShowRecipeModal(false);
-    formRef.current?.scrollIntoView({ behavior: 'smooth' });
+  useEffect(() => {
+    const stored = localStorage.getItem('recent-recipes');
+    if (stored) {
+      setRecentRecipes(JSON.parse(stored));
+    }
+  }, []);
+
+  const handleSaveRecipe = (edited: string) => {
+    setResponse(edited);
   };
 
   const handleGenerateRecipe = async () => {
     setIsLoading(true);
   
     try {
-      const response = await fetch('/api/route', { 
+      const body: Record<string, any> = {
+        ChefLevel: selectedChefLevel,
+        ingredientOptions: selectedIngredients,
+        selectedUtensils: selectedUtensils,
+        time: time,
+        additional: selectedAdditionalAllowed,
+        MealType: selectedMealType,
+        notes,
+      };
+
+      if (showDietOptions) {
+        if (protein !== undefined) body.protein = protein;
+        if (carbs !== undefined) body.carbs = carbs;
+        if (fat !== undefined) body.fat = fat;
+      }
+
+      const response = await fetch('/api/route', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          ChefLevel: selectedChefLevel,
-          ingredientOptions: selectedIngredients,
-          selectedUtensils: selectedUtensils,
-          time: time,
-          additional: selectedAdditionalAllowed,
-          MealType: selectedMealType,
-          notes,
-          protein,
-          carbs,
-          fat,
-        }),
+        body: JSON.stringify(body),
       });
   
       const contentType = response.headers.get('content-type') || '';
@@ -122,12 +176,14 @@ export const FormGenerate = () => {
       if (result.instructions) {
         setResponse(result.instructions);
         setShowRecipeModal(true);
-        if (result.title) {
-          const stored = localStorage.getItem('recent-recipes');
-          const recent = stored ? JSON.parse(stored) : [];
-          recent.push({ title: result.title, createdAt: Date.now() });
-          localStorage.setItem('recent-recipes', JSON.stringify(recent));
-        }
+        const newRecipe: StoredRecipe = {
+          title: result.title || 'Receita',
+          instructions: result.instructions,
+          createdAt: Date.now(),
+        };
+        const updated = [...recentRecipes, newRecipe];
+        setRecentRecipes(updated);
+        localStorage.setItem('recent-recipes', JSON.stringify(updated));
         console.log('Instruções recebidas:', result.instructions);
       } else {
         setErrorMessage("Erro ao encontrar uma resposta.");
@@ -144,6 +200,7 @@ export const FormGenerate = () => {
   
 
   return (
+    <>
     <section
       ref={formRef}
       className="container flex flex-col items-center justify-center border-gray-800 border-2 rounded-lg py-20 mb-10"
@@ -185,64 +242,46 @@ export const FormGenerate = () => {
       </div>
       <Button
         className="mt-4 py-1"
-        onClick={() => setShowDietOptions(!showDietOptions)}
+        onClick={() => {
+          if (showDietOptions) {
+            setProtein(undefined);
+            setCarbs(undefined);
+            setFat(undefined);
+          }
+          setShowDietOptions(!showDietOptions);
+        }}
       >
         Dieta
       </Button>
       {showDietOptions && (
-
         <div className="flex flex-col items-center gap-2 mt-4 text-gray-50">
-          <label className="flex flex-col items-start">
-            <span>Proteína (g)</span>
-            <input
-              type="number"
-              value={protein}
-              onChange={(e) => setProtein(Number(e.target.value))}
-              className="w-[200px] bg-gray-800 rounded-lg p-2 text-gray-50"
-            />
-          </label>
-          <label className="flex flex-col items-start">
-            <span>Carboidratos (g)</span>
-            <input
-              type="number"
-              value={carbs}
-              onChange={(e) => setCarbs(Number(e.target.value))}
-              className="w-[200px] bg-gray-800 rounded-lg p-2 text-gray-50"
-            />
-          </label>
-          <label className="flex flex-col items-start">
-            <span>Gordura (g)</span>
-            <input
-              type="number"
-              value={fat}
-              onChange={(e) => setFat(Number(e.target.value))}
-              className="w-[200px] bg-gray-800 rounded-lg p-2 text-gray-50"
-            />
-          </label>
-
-        <div className="flex flex-col items-center gap-2 mt-4">
           <input
             type="number"
-            value={protein}
-            onChange={(e) => setProtein(Number(e.target.value))}
+            value={protein ?? ''}
+            onChange={(e) =>
+              setProtein(e.target.value ? Number(e.target.value) : undefined)
+            }
             className="w-[200px] bg-gray-800 rounded-lg p-2 text-gray-50 placeholder:text-gray-400"
             placeholder="Proteína (g)"
           />
           <input
             type="number"
-            value={carbs}
-            onChange={(e) => setCarbs(Number(e.target.value))}
+            value={carbs ?? ''}
+            onChange={(e) =>
+              setCarbs(e.target.value ? Number(e.target.value) : undefined)
+            }
             className="w-[200px] bg-gray-800 rounded-lg p-2 text-gray-50 placeholder:text-gray-400"
             placeholder="Carboidratos (g)"
           />
           <input
             type="number"
-            value={fat}
-            onChange={(e) => setFat(Number(e.target.value))}
+            value={fat ?? ''}
+            onChange={(e) =>
+              setFat(e.target.value ? Number(e.target.value) : undefined)
+            }
             className="w-[200px] bg-gray-800 rounded-lg p-2 text-gray-50 placeholder:text-gray-400"
             placeholder="Gordura (g)"
           />
-
         </div>
       )}
 
@@ -281,9 +320,28 @@ export const FormGenerate = () => {
         isOpen={showRecipeModal}
         content={response}
         onClose={() => setShowRecipeModal(false)}
-        onEdit={handleEditRecipe}
+        onSave={handleSaveRecipe}
       />
 
     </section>
+    <aside className="fixed top-0 right-0 w-60 h-full overflow-y-auto bg-gray-800 text-gray-50 p-4">
+      <h2 className="font-bold mb-2">Receitas recentes</h2>
+      <ul className="flex flex-col gap-2">
+        {recentRecipes.map((recipe, index) => (
+          <li key={index}>
+            <button
+              className="text-left w-full hover:underline"
+              onClick={() => {
+                setResponse(recipe.instructions);
+                setShowRecipeModal(true);
+              }}
+            >
+              {recipe.title}
+            </button>
+          </li>
+        ))}
+      </ul>
+    </aside>
+    </>
   );
 };
