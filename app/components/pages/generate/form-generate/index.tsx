@@ -66,6 +66,10 @@ export const FormGenerate = () => {
   const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
   const [showRecipeModal, setShowRecipeModal] = useState<boolean>(false);
   const [notes, setNotes] = useState('');
+  const [showDietOptions, setShowDietOptions] = useState<boolean>(false);
+  const [protein, setProtein] = useState<number>(0);
+  const [carbs, setCarbs] = useState<number>(0);
+  const [fat, setFat] = useState<number>(0);
 
   const handleGenerateRecipe = async () => {
     setIsLoading(true);
@@ -82,8 +86,11 @@ export const FormGenerate = () => {
           selectedUtensils: selectedUtensils,
           time: time,
           additional: selectedAdditionalAllowed,
-          MealType: selectedMealType, 
+          MealType: selectedMealType,
           notes,
+          protein,
+          carbs,
+          fat,
         }),
       });
   
@@ -162,6 +169,37 @@ export const FormGenerate = () => {
         />
         <p>Permitir ingredientes adicionais?</p>
       </div>
+      <Button
+        className="mt-4 py-1"
+        onClick={() => setShowDietOptions(!showDietOptions)}
+      >
+        Dieta
+      </Button>
+      {showDietOptions && (
+        <div className="flex flex-col items-center gap-2 mt-4">
+          <input
+            type="number"
+            value={protein}
+            onChange={(e) => setProtein(Number(e.target.value))}
+            className="w-[200px] bg-gray-800 rounded-lg p-2 text-gray-50 placeholder:text-gray-400"
+            placeholder="Proteína (g)"
+          />
+          <input
+            type="number"
+            value={carbs}
+            onChange={(e) => setCarbs(Number(e.target.value))}
+            className="w-[200px] bg-gray-800 rounded-lg p-2 text-gray-50 placeholder:text-gray-400"
+            placeholder="Carboidratos (g)"
+          />
+          <input
+            type="number"
+            value={fat}
+            onChange={(e) => setFat(Number(e.target.value))}
+            className="w-[200px] bg-gray-800 rounded-lg p-2 text-gray-50 placeholder:text-gray-400"
+            placeholder="Gordura (g)"
+          />
+        </div>
+      )}
 
       <div className="rounded-lg placeholder:text-gray-400 text-gray-50 p-4 focus:outline-none flex flex-col items-center focus:ring-2 ring-red-500">
       <textarea 

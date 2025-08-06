@@ -19,6 +19,9 @@ describe('POST /api/route', () => {
     additional: true,
     MealType: 'Breakfast',
     notes: 'note',
+    protein: 30,
+    carbs: 40,
+    fat: 20,
   };
 
   beforeEach(() => {
@@ -43,6 +46,7 @@ describe('POST /api/route', () => {
     expect(json.instructions).toContain('Recipe Title');
     expect(json.instructions).toContain('Step 1');
     expect(json.title).toBe('Recipe Title');
+    expect(json.instructions).toContain('Proteína: 30 g');
   });
 
   it('returns fallback instructions when generation fails', async () => {
@@ -59,6 +63,7 @@ describe('POST /api/route', () => {
 
     expect(mockGenerateContent).toHaveBeenCalled();
     expect(json.instructions).toContain('Receita simples de Breakfast');
+    expect(json.instructions).toContain('Proteína: 30 g');
     expect(json.title).toBe('Receita simples de Breakfast');
   });
 
@@ -75,6 +80,7 @@ describe('POST /api/route', () => {
 
     expect(mockGenerateContent).not.toHaveBeenCalled();
     expect(json.instructions).toContain('Receita simples de Breakfast');
+    expect(json.instructions).toContain('Proteína: 30 g');
     expect(json.title).toBe('Receita simples de Breakfast');
   });
 });
