@@ -97,15 +97,6 @@ export const FormGenerate = () => {
   };
 
   const handleGenerateRecipe = async () => {
-    if (
-      showDietOptions &&
-      (protein === undefined || carbs === undefined || fat === undefined)
-    ) {
-      setErrorMessage('Preencha todos os campos de dieta');
-      setShowErrorModal(true);
-      return;
-    }
-
     setIsLoading(true);
 
     try {
