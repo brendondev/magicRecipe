@@ -1,8 +1,57 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Basket, Check, ChefHat, ForkKnife } from "@phosphor-icons/react/dist/ssr";
 import  {ChefLevel, IngredientsItem, UtensilsItem } from "@/app/components/array-select";
 import { Additional, MealType } from "@/app/components/array-select";
 import { Button } from "@/app/components/button";
+
+type RecipeModalProps = {
+  isOpen: boolean;
+  content: string | null;
+  onClose: () => void;
+};
+
+const RecipeModal = ({ isOpen, content, onClose }: RecipeModalProps) => {
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        onClose();
+      }
+      if (e.key === "Tab") {
+        e.preventDefault();
+        closeRef.current?.focus();
+      }
+    };
+
+    closeRef.current?.focus();
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, onClose]);
+
+  if (!isOpen || !content) return null;
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
+      <div className="relative bg-white p-5 rounded-lg shadow-lg max-h-[90vh] overflow-y-auto">
+        <button
+          ref={closeRef}
+          className="absolute top-2 right-2 text-black"
+          onClick={onClose}
+          aria-label="Close"
+        >
+          X
+        </button>
+        <div
+          className="text-black"
+          dangerouslySetInnerHTML={{ __html: content }}
+        />
+      </div>
+    </div>
+  );
+};
 
 export const FormGenerate = () => {
   const [time, setTime] = useState<number>(10);
@@ -15,7 +64,8 @@ export const FormGenerate = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [showErrorModal, setShowErrorModal] = useState<boolean>(false);
-  const [notes, setNotes] = useState(''); 
+  const [showRecipeModal, setShowRecipeModal] = useState<boolean>(false);
+  const [notes, setNotes] = useState('');
 
   const handleGenerateRecipe = async () => {
     setIsLoading(true);
@@ -53,6 +103,7 @@ export const FormGenerate = () => {
 
       if (result.instructions) {
         setResponse(result.instructions);
+        setShowRecipeModal(true);
         if (result.title) {
           const stored = localStorage.getItem('recent-recipes');
           const recent = stored ? JSON.parse(stored) : [];
@@ -143,7 +194,11 @@ export const FormGenerate = () => {
           </div>
         </div>
       )}
-      <div className="text-black"> {response && <div dangerouslySetInnerHTML={{ __html: response }} />}</div>
+      <RecipeModal
+        isOpen={showRecipeModal}
+        content={response}
+        onClose={() => setShowRecipeModal(false)}
+      />
    
     </section>
   );
