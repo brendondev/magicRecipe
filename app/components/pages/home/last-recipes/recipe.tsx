@@ -3,7 +3,6 @@ import { getRelativeTimeString } from "@/app/utils/get-relative-time";
 import Image from "next/image";
 import { ReactNode } from "react";
 import { ForkKnife } from "@phosphor-icons/react";
-import Slider from "react-slick"
 
 type RecipeProps = {
   recipe: {
